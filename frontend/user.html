@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Knowa Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    .chat-container {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+    .message {
+      margin-bottom: 10px;
+    }
+    .user {
+      text-align: right;
+    }
+    .bot {
+      text-align: left;
+    }
+    .feedback {
+      margin-top: 10px;
+    }
+    .feedback button {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Chat with Knowa</h2>
+    <div id="chat-container" class="chat-container">
+      <div id="chat"></div>
+      <div>
+        <input type="text" id="questionInput" placeholder="Ask something..." />
+        <button onclick="sendQuestion()">Ask</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function sendQuestion() {
+      const questionInput = document.getElementById('questionInput');
+      const question = questionInput.value;
+      if (!question) return;
+
+      addMessage(question, 'user');
+
+      fetch("/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const answer = data.answer || "Sorry, couldn't get an answer.";
+        addMessage(answer, 'bot', question);
+      })
+      .catch(err => {
+        console.error(err);
+        addMessage("Error getting response.", 'bot');
+      });
+
+      questionInput.value = '';
+    }
+
+    function addMessage(text, type, question = "") {
+      const chat = document.getElementById('chat');
+
+      const msgWrapper = document.createElement('div');
+      msgWrapper.className = `message ${type}`;
+
+      const msg = document.createElement('div');
+      msg.innerHTML = `<span>${text}</span>`;
+
+      msgWrapper.appendChild(msg);
+
+      // Feedback buttons
+      if (type === 'bot') {
+        const feedbackDiv = document.createElement('div');
+        feedbackDiv.className = 'feedback';
+
+        const feedbackOptions = [
+          { label: 'Clear', icon: '👍🏻' },
+          { label: 'Unclear', icon: '💡' },
+          { label: 'Wrong', icon: '❌' }
+        ];
+
+        feedbackOptions.forEach(option => {
+          const btn = document.createElement('button');
+          btn.innerHTML = `${option.icon} ${option.label}`;
+          btn.onclick = () => {
+            fetch("/feedback", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                question: question,
+                answer: text,
+                feedback: option.label
+              })
+            }).then(() => {
+              feedbackDiv.innerHTML = '<span style="color: green;">✅ Thanks for the feedback</span>';
+            }).catch(err => {
+              console.error(err);
+              feedbackDiv.innerHTML = '<span style="color: red;">⚠️ Feedback failed</span>';
+            });
+          };
+          feedbackDiv.appendChild(btn);
+        });
+
+        msgWrapper.appendChild(feedbackDiv);
+      }
+
+      chat.appendChild(msgWrapper);
+      chat.scrollTop = chat.scrollHeight;
+    }
+  </script>
+</body>
+</html>

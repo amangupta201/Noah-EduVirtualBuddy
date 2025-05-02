@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin PDF Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    .file-input {
+      margin-bottom: 10px;
+    }
+    .message {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Upload PDFs</h2>
+    <div class="file-input">
+      <input type="file" id="pdfInput" accept="application/pdf" multiple />
+      <button onclick="uploadPDFs()">Upload</button>
+    </div>
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    function uploadPDFs() {
+      const fileInput = document.getElementById('pdfInput');
+      const files = fileInput.files;
+      if (files.length === 0) return alert("Please select at least one file.");
+
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        formData.append("files", files[i]);
+      }
+
+      fetch("/upload", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.message) {
+          document.getElementById('message').innerText = data.message;
+        } else {
+          alert("Upload failed.");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error uploading PDFs.");
+      });
+    }
+  </script>
+</body>
+</html>

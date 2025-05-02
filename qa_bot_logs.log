@@ -1,0 +1,50 @@
+2025-05-02 18:01:30,141 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.1.8:8080
+2025-05-02 18:01:30,143 - [33mPress CTRL+C to quit[0m
+2025-05-02 18:01:30,145 -  * Restarting with stat
+2025-05-02 18:01:43,799 -  * Debugger is active!
+2025-05-02 18:01:43,806 -  * Debugger PIN: 326-276-100
+2025-05-02 18:02:26,442 - 127.0.0.1 - - [02/May/2025 18:02:26] "[36mGET /user HTTP/1.1[0m" 304 -
+2025-05-02 18:02:48,706 - 127.0.0.1 - - [02/May/2025 18:02:48] "GET /user HTTP/1.1" 200 -
+2025-05-02 18:02:48,900 - 127.0.0.1 - - [02/May/2025 18:02:48] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-05-02 18:03:05,783 - 127.0.0.1 - - [02/May/2025 18:03:05] "[36mGET /user HTTP/1.1[0m" 304 -
+2025-05-02 18:03:18,677 - Question: what is the valve handbook about?
+Answer: The Valve Handbook is a guide for new employees at Valve, an organization where talented individuals are empowered to do their best work. The handbook provides information on the company's history, culture, and principles to help new employees settle in and succeed at Valve.
+2025-05-02 18:03:18,677 - 127.0.0.1 - - [02/May/2025 18:03:18] "POST /ask HTTP/1.1" 200 -
+2025-05-02 18:03:21,050 - 127.0.0.1 - - [02/May/2025 18:03:21] "POST /feedback HTTP/1.1" 200 -
+2025-05-02 18:03:53,337 - Question: list one ai powered earbud idea along with practical implementation
+Answer: Hydration Estimation Using Sweat & Temperature: Monitoring sweat composition (sodium, potassium) and body temperature to assess hydration levels and provide real-time hydration reminders and fluid intake suggestions. Practicality includes sweat-based lactate and electrolyte sensors in earbuds being prototyped, sensors in earbuds like those in Sennheiser Momentum Sport supporting feasibility, and AI estimating hydration using contextual activity data.
+2025-05-02 18:03:53,337 - 127.0.0.1 - - [02/May/2025 18:03:53] "POST /ask HTTP/1.1" 200 -
+2025-05-02 18:03:57,817 - 127.0.0.1 - - [02/May/2025 18:03:57] "POST /feedback HTTP/1.1" 200 -
+2025-05-02 18:04:23,029 - Question: dataset used for stock market trend prediction using sentiment analysis
+Answer: The dataset used for stock market trend prediction using sentiment analysis in this project includes news articles related to stock markets or specific companies, as well as social media sentiment data.
+2025-05-02 18:04:23,029 - 127.0.0.1 - - [02/May/2025 18:04:23] "POST /ask HTTP/1.1" 200 -
+2025-05-02 18:04:27,890 - 127.0.0.1 - - [02/May/2025 18:04:27] "POST /feedback HTTP/1.1" 200 -
+2025-05-02 18:12:24,759 - Question: explain the model architecture used in the stock market trend prediction
+Answer: The model architecture used in the stock market trend prediction system involves the use of sentiment analysis of news and social media data to predict Indian stock market trends. The system integrates financial news and social media data to predict stock market trends by analyzing current sentiment from sources like Google News, Economic Times, and Twitter. It utilizes techniques like Natural Language Processing and Deep Learning, including a CNN-LSTM model, to predict sentiment scores that map to actionable investment advice such as Buy, Hold, or Sell. This approach is different from traditional stock forecasting techniques that primarily focus on time series models like ARIMA, GARCH, and Exponential Smoothing, as it captures real-time qualitative variables like investor sentiment for more dynamic and accurate predictions.
+2025-05-02 18:12:24,759 - 127.0.0.1 - - [02/May/2025 18:12:24] "POST /ask HTTP/1.1" 200 -
+2025-05-02 18:12:35,851 - 127.0.0.1 - - [02/May/2025 18:12:35] "POST /feedback HTTP/1.1" 200 -
+2025-05-02 18:12:59,319 - Question: why hybrid model is used in stock market trend prediction?
+Answer: A hybrid model is used in stock market trend prediction because traditional quantitative methods like ARIMA and technical indicators often fail to consider the influence of human sentiment on the market. By incorporating sentiment analysis from sources like financial news and social media data, the hybrid model can provide more dynamic and accurate predictions by considering both quantitative and qualitative variables.
+2025-05-02 18:12:59,319 - 127.0.0.1 - - [02/May/2025 18:12:59] "POST /ask HTTP/1.1" 200 -
+2025-05-02 18:13:08,349 - 127.0.0.1 - - [02/May/2025 18:13:08] "POST /feedback HTTP/1.1" 200 -
+2025-05-02 18:13:09,456 - 127.0.0.1 - - [02/May/2025 18:13:09] "POST /feedback HTTP/1.1" 200 -
+2025-05-02 18:13:09,848 - 127.0.0.1 - - [02/May/2025 18:13:09] "POST /feedback HTTP/1.1" 200 -
+2025-05-02 18:13:31,554 - Question: Why CNN-LSTM is used as a hybrid approach in stock market trend prediction?
+Answer: CNN-LSTM is used as a hybrid approach in stock market trend prediction because it combines the strengths of both Convolutional Neural Networks (CNN) and Long Short-Term Memory (LSTM) networks. 
+
+CNNs are good at capturing local n-gram patterns in data, while LSTMs are effective in understanding the context and long-term dependencies in sequences. By combining both models, the hybrid approach can learn semantic patterns and contextual dependencies effectively in financial news headlines, which are important for sentiment analysis and stock market prediction. 
+
+Additionally, the sigmoid output of the model provides a fine-grained sentiment score rather than a binary output, which is suitable for mapping stock decisions (Buy/Hold/Sell). Overall, the CNN-LSTM hybrid model outperforms older models in understanding contextual sentiment and achieving high accuracy and generalization in predicting stock market trends.
+2025-05-02 18:13:31,560 - 127.0.0.1 - - [02/May/2025 18:13:31] "POST /ask HTTP/1.1" 200 -
+2025-05-02 18:13:36,727 - 127.0.0.1 - - [02/May/2025 18:13:36] "POST /feedback HTTP/1.1" 200 -
+2025-05-02 18:25:26,467 - Question: what is the employee handbook about?
+Answer: The employee handbook is a guide for new employees at Valve, providing information on employment policies, practices, position descriptions, and salary administration. It also states that the handbook is not an employment contract and can be subject to change at any time.
+2025-05-02 18:25:26,467 - 127.0.0.1 - - [02/May/2025 18:25:26] "POST /ask HTTP/1.1" 200 -
+2025-05-02 18:25:30,255 - 127.0.0.1 - - [02/May/2025 18:25:30] "POST /feedback HTTP/1.1" 200 -
+2025-05-02 18:52:09,484 - Question: define the valve handbook
+Answer: The Valve Handbook is a guide for new employees at Valve, a company known for its innovative and empowering work environment. The handbook includes information about the company's history, values, and principles, as well as tips for settling in and finding a work-life balance. It is dedicated to the families of Valve employees and is meant to help new employees navigate their experience at the company.
+2025-05-02 18:52:09,484 - 127.0.0.1 - - [02/May/2025 18:52:09] "POST /ask HTTP/1.1" 200 -
+2025-05-02 18:52:40,770 - 127.0.0.1 - - [02/May/2025 18:52:40] "POST /feedback HTTP/1.1" 200 -
