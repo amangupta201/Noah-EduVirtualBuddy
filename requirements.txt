@@ -1,0 +1,8 @@
+transformers
+numpy
+nltk
+pymupdf
+chromadb
+requests
+flask
+boto3
