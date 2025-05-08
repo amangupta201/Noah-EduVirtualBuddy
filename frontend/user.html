@@ -2,139 +2,561 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Knowa Chatbot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+  <title>Ask Noah</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
+    /* Existing styles */
+    .parent-div {
+      height: 96%;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      flex-direction: row;
+      justify-content: flex-start;
+      width: 80%;
     }
+
     .container {
       background-color: #fff;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       width: 100%;
-      max-width: 600px;
     }
+
     h2 {
       margin-bottom: 20px;
     }
+
     .chat-container {
       max-height: 400px;
       overflow-y: auto;
       margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
     }
+
     .message {
       margin-bottom: 10px;
+      padding: 10px 15px;
+      border-radius: 10px;
+      word-wrap: break-word;
+      max-width: 70%;
+      width: fit-content;
     }
+
     .user {
+      background-color: blue;
+      color: white;
+      align-self: flex-end;
       text-align: right;
+      margin-left: auto;
     }
+
     .bot {
-      text-align: left;
+      background-color: #fefefe;
+      color: #333333;
+      align-self: flex-start;
+      margin-right: auto;
     }
+
     .feedback {
       margin-top: 10px;
+      text-align: left;
     }
+
     .feedback button {
-      margin-right: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 24px; /* Increase the size of the emojis */
+      padding: 0;
+      line-height: 1;
     }
+
+    .feedback .clear {
+      color: green;
+    }
+
+    .feedback .unclear {
+      color: #FFD700; /* Darker yellow */
+    }
+
+    .feedback .wrong {
+      color: red;
+    }
+
+    .heading h1 {
+      color: #333333 !important;
+      font-weight: 600;
+      padding: 1px;
+      margin-bottom:8px;
+    }
+
+    .subheading h3 {
+      color: #646464 !important;
+      font-weight: 300;
+      padding: 0px;
+    }
+
+    .input-container {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      padding: 10px 15px;
+      background-color: #EDF2F6;
+      position: relative;
+      width: calc(100% - 40px); /* Adjust width to fit the screen */
+      margin: 20px auto;
+    }
+
+    .input-container input[type="text"] {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      color: #333;
+      background-color: transparent;
+    }
+
+    .send-btn {
+      background-color: #0D47A1; /* Dark Blue */
+      border: none;
+      border-radius: 50%;
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .send-btn img {
+      width: 18px;
+      height: 18px;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Raleway', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden; /* Prevent scrolling of the entire page */
+    }
+
+    .parent {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .heading, .subheading {
+      text-align: center;
+    }
+
+    .scrollable {
+      overflow-y: auto; /* Enable vertical scrolling within this div */
+      padding: 20px;
+      background-color: #EDF2F6;
+      display: flex;
+      flex-direction: column;
+      flex: 1; /* Allow this div to take up remaining space */
+      max-height: calc(100vh-40px);
+    }
+
+    .bottom-container {
+      position: fixed;
+      bottom: 0;
+      width: 60%;
+      background-color: #EDF2F6;
+      padding: 0px;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+      left:20%;
+    }
+
+    .faq-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%; /* Adjust width to fit the screen */
+      background-color: #EDF2F6;
+      border-radius: 8px;
+    }
+
+    .faq-categories {
+      display: flex;
+      justify-content: space-around;
+      padding: 5px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+
+    .faq-category {
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 5px;
+      background-color: #ffffff;
+    }
+
+    .faq-category:hover {
+      background-color: #d0d0d0;
+    }
+
+    .faq-questions {
+      display: none;
+      flex-direction: column;
+    }
+
+    .faq-question {
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 5px;
+      background-color: #e0e0e0;
+      margin-bottom: 5px;
+    }
+
+    .faq-question:hover {
+      background-color: #c0c0c0;
+    }
+
+    .toast {
+      visibility: hidden;
+      max-width: 250px;
+      margin: auto;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 2px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1;
+      right: 10px; /* Align to the right */
+      bottom: 10px; /* Align to the bottom */
+      font-size: 17px;
+    }
+
+    .toast.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+
+    @keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 10px; opacity: 1;}
+    }
+
+    @keyframes fadeout {
+      from {bottom: 10px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+    }
+
+    /* New styles for the rounded rectangle */
+    .rounded-rectangle {
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 60%;
+      margin: 20px auto;
+      padding: 0px;
+      flex: 1; /* Allow this div to take up remaining space */
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header section styles */
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .header img {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+
+    .header span {
+      font-weight: 600;
+    }
+    .feedback-container {
+  display: flex;
+  align-items: center;
+}
+
+.feedback-container span {
+  margin-right: 10px; /* Add some space between the text and the buttons */
+  font-weight: bold; /* Make the text bold */
+  color: grey; /* Change the text color to grey */
+}
+
+.feedback-container button {
+  margin-left: 5px; /* Add some space between the buttons */
+}
+
+
+
+    /* Responsive design for mobile devices */
+
+
+
+    @media (max-width: 600px) {
+      .rounded-rectangle {
+        width: 90%;
+      }
+      .bottom-container {
+      width: 90%;
+      left:5%;
+     }
+    }
+
+    @media only screen and (min-width: 600px) {
+    .rounded-rectangle {
+        width: 90%;
+     }
+
+     .bottom-container {
+      width: 90%;
+      left:5%;
+     }
+    }
+    @media only screen and (min-width: 992px){
+     .rounded-rectangle {
+        width: 60%;
+      }
+      .bottom-container {
+      width: 60%;
+      left:20%;
+     }
+    }
+
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Chat with Knowa</h2>
-    <div id="chat-container" class="chat-container">
-      <div id="chat"></div>
-      <div>
-        <input type="text" id="questionInput" placeholder="Ask something..." />
-        <button onclick="sendQuestion()">Ask</button>
+<div class="parent">
+
+  <div style="display:flex;" class="heading">
+    <div style="display:flex; padding-left:10px;padding-top:10px;"> <img src="frontend/logo_av.png" ></div>
+    <div style="flex:1;"><h1 >Ask Noah</h1>
+      <span>Your workplace assistant, here to help you get things done.</span>
+    </div>
+    <div style="display:flex; padding-left:10px;padding-top:10px; width:200px;"> </div>
+  </div>
+  <!--
+  <div class="subheading">
+    <h3>Your workplace assistant, here to help you get things done.</h3>
+  </div>
+  -->
+
+  <!-- New div with rounded rectangle styling -->
+  <div class="rounded-rectangle">
+    <!-- Header section -->
+    <div class="header">
+      <img src="frontend/chat.png" alt="">
+      <span>Ask me about company policies</span>
+    </div>
+    <div class="scrollable">
+      <div id="chat-container" class="chat-container">
+        <div class="message bot">
+          Hi! 👋 I'm Noah, your workplace assistant. I can help with questions about leave, tech issues, tools, benefits, and more. What do you need help with today?
+        </div>
+        <div id="chat" style="padding-bottom:50px;margin-bottom:50px;"></div>
       </div>
     </div>
   </div>
 
-  <script>
-    function sendQuestion() {
-      const questionInput = document.getElementById('questionInput');
-      const question = questionInput.value;
-      if (!question) return;
+  <!-- New container for FAQ and input -->
+  <div  class="bottom-container">
+    <div class="faq-container">
+      <div class="faq-categories" id="faq-categories">
+        <!-- FAQ categories will be inserted here -->
+      </div>
+      <div class="faq-questions" id="faq-questions">
+        <!-- FAQ questions will be inserted here -->
+      </div>
 
-      addMessage(question, 'user');
+      <div style="background: #fff; padding-left:20px;padding-right:20px;">
 
-      fetch("/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question })
-      })
-      .then(res => res.json())
-      .then(data => {
-        const answer = data.answer || "Sorry, couldn't get an answer.";
-        addMessage(answer, 'bot', question);
-      })
-      .catch(err => {
-        console.error(err);
-        addMessage("Error getting response.", 'bot');
-      });
+    <div class="input-container">
+      <input type="text" id="questionInput" placeholder="Type your question here..." />
+      <button onclick="sendQuestion()" class="send-btn" aria-label="Send">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#fff" viewBox="0 0 24 24">
+          <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path>
+        </svg>
+      </button>
+    </div>
+      </div>
 
-      questionInput.value = '';
-    }
+  </div>
 
-    function addMessage(text, type, question = "") {
-      const chat = document.getElementById('chat');
+    </div>
 
-      const msgWrapper = document.createElement('div');
-      msgWrapper.className = `message ${type}`;
+  <div id="toast" class="toast"></div>
+</div>
 
-      const msg = document.createElement('div');
-      msg.innerHTML = `<span>${text}</span>`;
+<script>
+  const faqData = {
+    "Leave": [
+      "What is the proper procedure for requesting time off, and how much notice is required?"
+    ],
+    "Benefits": [
+       "What benefits are available to full-time employees, and when do they become effective?"
+    ],
+    "Tech": [
+      "What is the company policy on personal phone use or social media during work hours?"
+    ],
+    "Code of Conduct": [
+      "Who should I talk to if I experience or witness harassment in the workplace?"
+    ],
+    "Others": [
+    "How are driving records or vehicle use monitored for employees with company vehicles?"
+    ]
+  };
 
-      msgWrapper.appendChild(msg);
+  // Populate FAQ categories
+  const faqCategoriesContainer = document.getElementById('faq-categories');
+  Object.keys(faqData).forEach(category => {
+    const categoryDiv = document.createElement('div');
+    categoryDiv.className = 'faq-category';
+    categoryDiv.textContent = category;
+    categoryDiv.onclick = () => showQuestions(category);
+    faqCategoriesContainer.appendChild(categoryDiv);
+  });
 
-      // Feedback buttons
-      if (type === 'bot') {
-        const feedbackDiv = document.createElement('div');
-        feedbackDiv.className = 'feedback';
+  function showQuestions(category) {
+    const faqQuestionsContainer = document.getElementById('faq-questions');
+    faqQuestionsContainer.innerHTML = ''; // Clear previous questions
+    faqData[category].forEach(question => {
+      const questionDiv = document.createElement('div');
+      questionDiv.className = 'faq-question';
+      questionDiv.textContent = question;
+      questionDiv.onclick = () => sendFAQQuestion(question);
+      faqQuestionsContainer.appendChild(questionDiv);
+    });
+    faqQuestionsContainer.style.display = 'flex';
+  }
 
-        const feedbackOptions = [
-          { label: 'Clear', icon: '👍🏻' },
-          { label: 'Unclear', icon: '💡' },
-          { label: 'Wrong', icon: '❌' }
-        ];
+  function sendFAQQuestion(question) {
+    document.getElementById('questionInput').value = question;
+    sendQuestion();
+  }
 
-        feedbackOptions.forEach(option => {
-          const btn = document.createElement('button');
-          btn.innerHTML = `${option.icon} ${option.label}`;
-          btn.onclick = () => {
-            fetch("/feedback", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                question: question,
-                answer: text,
-                feedback: option.label
-              })
-            }).then(() => {
-              feedbackDiv.innerHTML = '<span style="color: green;">✅ Thanks for the feedback</span>';
-            }).catch(err => {
-              console.error(err);
-              feedbackDiv.innerHTML = '<span style="color: red;">⚠️ Feedback failed</span>';
-            });
-          };
-          feedbackDiv.appendChild(btn);
+  function sendQuestion() {
+    const questionInput = document.getElementById('questionInput');
+    const question = questionInput.value.trim();
+    if (!question) return;
+
+    addMessage(question, 'user');
+
+    fetch("/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question })
+    })
+    .then(res => res.json())
+    .then(data => {
+      const answer = data.answer || "Sorry, couldn't get an answer.";
+      addMessage(answer, 'bot', question);
+    })
+    .catch(err => {
+      console.error(err);
+      addMessage("Error getting response.", 'bot');
+    });
+
+    questionInput.value = '';
+  }
+
+  function addMessage(text, type, question = "") {
+  const chatContainer = document.getElementById('chat-container');
+  const chat = document.getElementById('chat');
+
+  const msgWrapper = document.createElement('div');
+  msgWrapper.className = `message ${type}`;
+
+  const msg = document.createElement('div');
+  msg.innerHTML = `<span>${text}</span>`;
+
+  msgWrapper.appendChild(msg);
+
+  // Feedback buttons
+  if (type === 'bot') {
+    const feedbackDiv = document.createElement('div');
+    feedbackDiv.className = 'feedback';
+
+    // Create a flex container for the text and buttons
+    const feedbackContainer = document.createElement('div');
+    feedbackContainer.className = 'feedback-container';
+
+    // Add "Rate this answer" text
+    const rateText = document.createElement('span');
+    rateText.innerHTML = 'Rate this answer: ';
+    feedbackContainer.appendChild(rateText);
+
+    const feedbackOptions = [
+      { label: 'Clear', icon: '👍🏻', color: 'green', className: 'clear' },
+      { label: 'Unclear', icon: '❓', color: '#FFD700', className: 'unclear' },
+      { label: 'Wrong', icon: '❌', color: 'red', className: 'wrong' }
+    ];
+
+    feedbackOptions.forEach(option => {
+      const btn = document.createElement('button');
+      btn.className = option.className;
+      btn.innerHTML = `${option.icon}`;
+      btn.onclick = () => {
+        fetch("/feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            question: question,
+            answer: text,
+            feedback: option.label
+          })
+        }).then(() => {
+          showToast(`You marked this answer as ${option.label.toLowerCase()}`, option.color);
+          feedbackDiv.innerHTML = '';
+        }).catch(err => {
+          console.error(err);
+          showToast('⚠️ Feedback failed', 'red');
         });
+      };
+      feedbackContainer.appendChild(btn);
+    });
 
-        msgWrapper.appendChild(feedbackDiv);
-      }
+    feedbackDiv.appendChild(feedbackContainer);
+    msgWrapper.appendChild(feedbackDiv);
+  }
 
-      chat.appendChild(msgWrapper);
-      chat.scrollTop = chat.scrollHeight;
+  chat.appendChild(msgWrapper);
+
+  // Scroll to the latest message
+  setTimeout(() => {
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }, 0);
+}
+
+function showToast(message, color) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = 'toast show';
+  toast.style.backgroundColor = color;
+  setTimeout(() => {
+    toast.className = toast.className.replace('show', '');
+  }, 3000);
+}
+
+  // Trigger send on Enter key
+  document.getElementById('questionInput').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      sendQuestion();
     }
-  </script>
+  });
+</script>
+
 </body>
 </html>
