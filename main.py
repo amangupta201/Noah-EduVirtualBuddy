@@ -41,18 +41,22 @@ def file_exists(filename):
 
 @app.route('/admin')
 def serve_admin_index():
+    logging.info("First touchpoint with backend: Admin index served")
     return send_from_directory(app.static_folder, 'admin.html')
 
 
 @app.route('/user')
 def serve_user_index():
+    logging.info("First touchpoint with backend: User index served")
     return send_from_directory(app.static_folder, 'user.html')
 
 
 @app.route('/upload', methods=['POST'])
 def upload_pdf():
+    logging.info("First touchpoint with backend: PDF upload initiated")
     files = request.files.getlist('files')
     if not files:
+        logging.error("No files part in the request")
         return jsonify({"error": "No files part"}), 400
 
     pdf_paths = []
@@ -68,14 +72,20 @@ def upload_pdf():
                 pdf_paths.append(filepath)
 
     if existing_files:
+        logging.error(f"The following files already exist: {', '.join(existing_files)}")
         return jsonify({"error": f"The following files already exist: {', '.join(existing_files)}"}), 409
 
+    batch_size = 10
     try:
         pdf_data = process_pdfs(pdf_paths)
         for path, text in pdf_data.items():
             chunks = chunk_text(text)
-            embeddings = embedder.encode(chunks)
-            vector_store.add_embeddings(embeddings, chunks)
+            logging.info("Embedding creation: Starting embedding process")
+            for i in range(0, len(chunks), batch_size):
+                batch_chunks = chunks[i:i + batch_size]
+                batch_embeddings = embedder.encode(batch_chunks)
+                vector_store.add_embeddings(batch_embeddings, batch_chunks)
+                logging.info("Embedding creation: Embeddings added to vector store")
 
         return jsonify({"message": "PDFs uploaded and processed successfully"}), 200
 
@@ -89,10 +99,15 @@ def ask_question():
     data = request.get_json()
     question = data.get('question')
     if not question:
+        logging.error("Missing question in the request")
         return jsonify({"error": "Missing question"}), 400
 
     try:
+        logging.info("Search: Initiating search for the question")
         answer = rag_pipeline.ask(question)
+        logging.info("Search: Question processed and answer generated")
+        # Log the question and answer
+        logging.info(f"Response from bot: Question: {question}\nAnswer: {answer}")
 
         # Log the question and answer
         logging.info(f"Question: {question}\nAnswer: {answer}")
@@ -112,9 +127,11 @@ def save_feedback():
     timestamp = datetime.datetime.utcnow().isoformat()
 
     if not all([question, answer, feedback]):
+        logging.error("Missing feedback data in the request")
         return jsonify({"error": "Missing feedback data"}), 400
 
     try:
+        logging.info("DynamoDB feedback addition: Saving feedback to DynamoDB")
         feedback_table.put_item(Item={
             'id': str(uuid.uuid4()),
             'timestamp': timestamp,
@@ -122,6 +139,7 @@ def save_feedback():
             'answer': answer,
             'feedback': feedback
         })
+        logging.info("DynamoDB feedback addition: Feedback saved successfully")
         return jsonify({"message": "Feedback saved successfully"}), 200
     except Exception as e:
         logging.error(f"Error saving feedback: {e}")
@@ -131,4 +149,5 @@ def save_feedback():
 if __name__ == '__main__':
     if not os.path.exists(UPLOAD_FOLDER):
         os.makedirs(UPLOAD_FOLDER)
+        logging.info("First touchpoint with backend: Flask app starting")
     app.run(debug=True, host='0.0.0.0', port=8080)
