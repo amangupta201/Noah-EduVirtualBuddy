@@ -1,8 +1,9 @@
 import logging
-from config import OPENAI_API_KEY
-from embedding import EmbeddingModel  # Your custom embedding wrapper
-from vector_store import VectorStore  # ✅ This is your wrapper
 import numpy as np
+
+from config import OPENAI_API_KEY
+from embedding import EmbeddingModel, ChromaCompatibleEmbeddingFunction
+from vector_store import VectorStore
 
 # ---------------------------
 # Logging setup
@@ -12,18 +13,20 @@ logging.basicConfig(filename='trulens.logs',
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 # ---------------------------
-# Load Vector Store used by Flask
+# Initialize Vector Store and Embedding Model
 # ---------------------------
 try:
     embedding_model = EmbeddingModel("sentence-transformers/all-MiniLM-L6-v2")
+    embedding_fn = ChromaCompatibleEmbeddingFunction(embedding_model)
+
     vector_store = VectorStore(
-        embedding_dim=384,
-        embedding_function=embedding_model,
-        persist_directory="./chroma_db"  # ✅ same as Flask app
+        embedding_dim=384,  # embedding size of MiniLM-L6-v2
+        embedding_function=embedding_fn,
+        persist_directory="./chroma_db"  # Make sure this matches your Flask setup
     )
     print("✅ VectorStore loaded from Flask's Chroma DB.")
 except Exception as e:
-    logging.error("Failed to load VectorStore", exc_info=True)
+    logging.error("❌ Failed to load VectorStore", exc_info=True)
 
 # ---------------------------
 # TruLens-compatible RAG wrapper
@@ -44,7 +47,7 @@ class RAG:
             query_embedding = embedding_model.encode([query])[0]
             return vector_store.search(query_embedding, k=4)
         except Exception as e:
-            logging.error("Error during retrieve", exc_info=True)
+            logging.error("❌ Error during retrieve", exc_info=True)
             return []
 
     @instrument
@@ -64,7 +67,7 @@ class RAG:
             ).choices[0].message.content
             return completion or "No response generated."
         except Exception as e:
-            logging.error("Error during completion", exc_info=True)
+            logging.error("❌ Error during completion", exc_info=True)
             return "Error generating completion."
 
     @instrument
@@ -73,13 +76,13 @@ class RAG:
             context_str = self.retrieve(query=query)
             return self.generate_completion(query=query, context_str=context_str)
         except Exception as e:
-            logging.error("Error during query", exc_info=True)
+            logging.error("❌ Error during query", exc_info=True)
             return "Error processing the query."
 
 rag = RAG()
 
 # ---------------------------
-# TruLens Feedback
+# TruLens Feedback Configuration
 # ---------------------------
 from trulens.core import Feedback, Select
 from trulens.providers.openai import OpenAI as OpenAIFeedback
@@ -104,14 +107,14 @@ tru_rag = TruApp(
 )
 
 # ---------------------------
-# Run queries and record
+# Run queries and record feedback
 # ---------------------------
 try:
     with tru_rag as recording:
         rag.query("What is the proper procedure for requesting time off, and how much notice is required?")
         rag.query("Who should I talk to if I experience or witness harassment in the workplace?")
 except Exception as e:
-    logging.error("Error during evaluation", exc_info=True)
+    logging.error("❌ Error during TruLens evaluation run", exc_info=True)
 
 # ---------------------------
 # Launch TruLens dashboard
@@ -121,4 +124,4 @@ from trulens.dashboard import run_dashboard
 try:
     run_dashboard(session, port=8502)
 except Exception as e:
-    logging.error("Dashboard launch failed", exc_info=True)
+    logging.error("❌ Dashboard launch failed", exc_info=True)
