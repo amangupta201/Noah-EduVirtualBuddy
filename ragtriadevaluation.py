@@ -33,16 +33,25 @@ try:
         name="Vehicles", embedding_function=embedding_function
     )
 
-    cache_file = "cached_embeddings.pkl"
 
+BATCH_SIZE = 10
+cache_file = "cached_embeddings.pkl"
+
+try:
     if os.path.exists(cache_file):
-        logging.info("Loading cached embeddings...")
+        print("🔁 Loading cached embeddings...")
         with open(cache_file, "rb") as f:
             texts, embeddings = pickle.load(f)
-        vector_store.add_embeddings(embeddings, texts)
-        logging.info("Cached embeddings loaded successfully.")
+        
+        # Optional: Re-add cached data to vector store
+        for i in range(0, len(texts), BATCH_SIZE):
+            batch_texts = texts[i:i + BATCH_SIZE]
+            batch_embeddings = embeddings[i:i + BATCH_SIZE]
+            vector_store.add_embeddings(batch_embeddings, batch_texts)
+        print("✅ Embedding data loaded from cache.")
+    
     else:
-        logging.info("Processing PDFs and generating embeddings...")
+        print("⚙️ Processing PDFs and generating embeddings...")
         pdfs = ["uploads/Advertising.pdf"]
         processed_texts = process_pdfs(pdfs)
 
@@ -52,13 +61,35 @@ try:
                 documents.extend(chunk_text(text))
 
         texts = [doc if isinstance(doc, str) else doc.page_content for doc in documents]
-        embeddings = embedding_function.embed_documents(texts)
+        existing_ids = set(vector_store.get()["ids"])
 
-        vector_store.add_embeddings(embeddings, texts)
+        texts_to_add = []
+        ids_to_add = []
 
+        for i, text in enumerate(texts):
+            doc_id = f"doc_{i}"
+            if doc_id not in existing_ids:
+                texts_to_add.append(text)
+                ids_to_add.append(doc_id)
+
+        # Batch process and embed
+        all_embeddings = []
+        for i in range(0, len(texts_to_add), BATCH_SIZE):
+            batch_texts = texts_to_add[i:i + BATCH_SIZE]
+            batch_ids = ids_to_add[i:i + BATCH_SIZE]
+            batch_embeddings = embedding_function.embed_documents(batch_texts)
+            vector_store.add_embeddings(batch_embeddings, batch_texts)
+            all_embeddings.extend(batch_embeddings)
+            print(f"✅ Added batch {i//BATCH_SIZE + 1} to vector store.")
+
+        # Save to cache
         with open(cache_file, "wb") as f:
-            pickle.dump((texts, embeddings), f)
-        logging.info("Embeddings generated and cached.")
+            pickle.dump((texts_to_add, all_embeddings), f)
+        print("✅ Embedding data cached.")
+
+except Exception as e:
+    logging.error("Error during batch embedding and processing", exc_info=True)
+
 
     # TruLens session init
     session = TruSession()
