@@ -103,6 +103,7 @@ f_context_relevance = Feedback(provider.context_relevance_with_cot_reasons, name
     .on_input().on(Select.RecordCalls.retrieve.rets[:])  # Context relevance feedback based on retrieved context
     .aggregate(np.mean)  # Optionally, aggregate if you are dealing with multiple sources of context
 
+
 # Add feedbacks to TruApp
 tru_rag = TruApp(
     rag,
