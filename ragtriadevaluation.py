@@ -1,4 +1,7 @@
 import logging
+import os
+import joblib
+
 from config import OPENAI_API_KEY
 from pdf_loader import load_pdf_text, process_pdfs, chunk_text
 from embedding import EmbeddingModel, ChromaCompatibleEmbeddingFunction
@@ -43,6 +46,41 @@ try:
         if doc_id not in existing_ids:
             texts_to_add.append(text)
             ids_to_add.append(doc_id)
+
+    
+    CACHE_FILE = "embedding_cache.pkl"
+    USE_CACHE = True
+
+    texts_to_add = []
+    ids_to_add = []
+
+    if USE_CACHE and os.path.exists(CACHE_FILE):
+
+        print("🔁 Loading cached embeddings...")
+        cache = joblib.load(CACHE_FILE)
+        texts_to_add = cache["texts"]
+        ids_to_add = cache["ids"]
+    else:
+        print("⚙️ Processing PDFs and generating embeddings...")
+        processed_texts = process_pdfs(pdfs)
+        documents = []
+
+        for text in processed_texts.values():
+            if text.strip():
+                documents.extend(chunk_text(text))
+
+        texts = [doc if isinstance(doc, str) else doc.page_content for doc in documents]
+        existing_ids = set(vector_store.get()["ids"])
+
+        for i, text in enumerate(texts):
+            doc_id = f"doc_{i}"
+            if doc_id not in existing_ids:
+                texts_to_add.append(text)
+                ids_to_add.append(doc_id)
+
+        # Save to cache
+        joblib.dump({"texts": texts_to_add, "ids": ids_to_add}, CACHE_FILE)
+        print("✅ Embedding data cached.")
 
     if texts_to_add:
         vector_store.add(documents=texts_to_add, ids=ids_to_add)
