@@ -7,7 +7,7 @@ from embedding import EmbeddingModel, ChromaCompatibleEmbeddingFunction
 import chromadb
 from chromadb.config import Settings
 from trulens.apps.app import TruApp, instrument
-from trulens.core import TruSession, Feedback # Add Feedback here
+from trulens.core import TruSession, Feedback, Select # Add Feedback and Select here
 from openai import OpenAI
 from trulens.providers.openai import OpenAI  # Use OpenAI instead of OpenAIFeedback
 import numpy as np
