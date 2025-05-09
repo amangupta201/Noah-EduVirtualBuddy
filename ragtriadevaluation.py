@@ -33,7 +33,6 @@ try:
         name="Vehicles", embedding_function=embedding_function
     )
 
-BATCH_SIZE = 10
 cache_file = "cached_embeddings.pkl"
 
 try:
@@ -74,6 +73,7 @@ try:
 
         # Batch process and embed
         all_embeddings = []
+        BATCH_SIZE=10
         for i in range(0, len(texts_to_add), BATCH_SIZE):
             batch_texts = texts_to_add[i:i + BATCH_SIZE]
             batch_ids = ids_to_add[i:i + BATCH_SIZE]
