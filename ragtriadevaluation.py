@@ -52,7 +52,8 @@ try:
     
     else:
         print("⚙️ Processing PDFs and generating embeddings...")
-        pdfs = ["uploads/Advertising.pdf"]
+        pdfs = ["uploads/EST03 Employee Handbook 5.7.25.pdf"]
+      
         processed_texts = process_pdfs(pdfs)
 
         documents = []
