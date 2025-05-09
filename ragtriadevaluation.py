@@ -41,7 +41,7 @@ class RAG:
     @instrument
     def retrieve(self, query: str) -> list:
         try:
-            query_embedding = embedding_model.get_embedding(query)
+            query_embedding = embedding_model.get_embedding([query])[0]
             return vector_store.search(query_embedding, k=4)
         except Exception as e:
             logging.error("Error during retrieve", exc_info=True)
