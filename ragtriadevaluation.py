@@ -33,15 +33,15 @@ try:
         name="Vehicles", embedding_function=embedding_function
     )
 
-cache_file = "cached_embeddings.pkl"
 
 try:
-    if os.path.exists(cache_file):
+    if os.path.exists("cached_embeddings.pkl"):
         print("🔁 Loading cached embeddings...")
-        with open(cache_file, "rb") as f:
+        with open("cached_embeddings.pkl", "rb") as f:
             texts, embeddings = pickle.load(f)
 
         # Optional: Re-add cached data to vector store
+        BATCH_SIZE=10
         for i in range(0, len(texts), BATCH_SIZE):
             batch_texts = texts[i:i + BATCH_SIZE]
             batch_embeddings = embeddings[i:i + BATCH_SIZE]
