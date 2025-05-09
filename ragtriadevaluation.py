@@ -9,7 +9,7 @@ from chromadb.config import Settings
 from trulens.apps.app import TruApp, instrument
 from trulens.core import TruSession
 from openai import OpenAI
-from trulens.providers.openai import OpenAIFeedback
+from trulens.providers.openai import OpenAI  # Use OpenAI instead of OpenAIFeedback
 import numpy as np
 
 # Setup basic error logging to file (trulens.logs)
@@ -140,8 +140,8 @@ rag = RAG()
 # -------------------------------------
 # Feedback Functions and Evaluation
 # -------------------------------------
-provider = OpenAIFeedback(model_engine="gpt-4.1-mini", api_key=OPENAI_API_KEY)
-guardrail_provider = OpenAIFeedback(model_engine="gpt-4.1-nano", api_key=OPENAI_API_KEY)
+provider = OpenAI(model_engine="gpt-4.1-mini", api_key=OPENAI_API_KEY)
+guardrail_provider = OpenAI(model_engine="gpt-4.1-nano", api_key=OPENAI_API_KEY)
 
 f_groundedness = Feedback(provider.groundedness_measure_with_cot_reasons, name="Groundedness") \
     .on(Select.RecordCalls.retrieve.rets.collect()) \
