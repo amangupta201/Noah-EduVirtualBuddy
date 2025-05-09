@@ -12,8 +12,8 @@ from openai import OpenAI
 from trulens.providers.openai import OpenAI  # Use OpenAI instead of OpenAIFeedback
 import numpy as np
 
-# Setup basic error logging to file (trulens.logs)
-logging.basicConfig(filename='trulens.logs',
+# Setup basic error logging to file (trulens.log)
+logging.basicConfig(filename='trulens.log',
                     level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
