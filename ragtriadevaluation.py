@@ -33,7 +33,6 @@ try:
         name="Vehicles", embedding_function=embedding_function
     )
 
-
 BATCH_SIZE = 10
 cache_file = "cached_embeddings.pkl"
 
@@ -42,18 +41,18 @@ try:
         print("🔁 Loading cached embeddings...")
         with open(cache_file, "rb") as f:
             texts, embeddings = pickle.load(f)
-        
+
         # Optional: Re-add cached data to vector store
         for i in range(0, len(texts), BATCH_SIZE):
             batch_texts = texts[i:i + BATCH_SIZE]
             batch_embeddings = embeddings[i:i + BATCH_SIZE]
             vector_store.add_embeddings(batch_embeddings, batch_texts)
         print("✅ Embedding data loaded from cache.")
-    
+
     else:
         print("⚙️ Processing PDFs and generating embeddings...")
         pdfs = ["uploads/EST03 Employee Handbook 5.7.25.pdf"]
-      
+
         processed_texts = process_pdfs(pdfs)
 
         documents = []
@@ -90,7 +89,6 @@ try:
 
 except Exception as e:
     logging.error("Error during batch embedding and processing", exc_info=True)
-
 
     # TruLens session init
     session = TruSession()
