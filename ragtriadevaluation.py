@@ -218,6 +218,6 @@ except Exception as e:
 from trulens.dashboard import run_dashboard
 
 try:
-    run_dashboard(session, port=8501)
+    run_dashboard(session, port=8502)
 except Exception as e:
     logging.error("Error starting dashboard", exc_info=True)
