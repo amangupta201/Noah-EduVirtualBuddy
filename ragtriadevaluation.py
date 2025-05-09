@@ -1,7 +1,4 @@
 import logging
-import os
-import joblib
-
 from config import OPENAI_API_KEY
 from pdf_loader import load_pdf_text, process_pdfs, chunk_text
 from embedding import EmbeddingModel, ChromaCompatibleEmbeddingFunction
@@ -26,7 +23,8 @@ try:
     )
 
     # Load and process PDFs
-    pdfs = ["Advertising.pdf"]
+    pdfs = ["uploads/Advertising.pdf"]
+
     processed_texts = process_pdfs(pdfs)
 
     # Chunk text
@@ -47,7 +45,9 @@ try:
             texts_to_add.append(text)
             ids_to_add.append(doc_id)
 
-    
+    import os
+    import joblib
+
     CACHE_FILE = "embedding_cache.pkl"
     USE_CACHE = True
 
