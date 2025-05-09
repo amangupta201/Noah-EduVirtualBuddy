@@ -13,11 +13,13 @@ from embedding import EmbeddingModel, ChromaCompatibleEmbeddingFunction
 import chromadb
 from chromadb.config import Settings
 
-from trulens_eval import TruApp, Feedback, TruSession
-from trulens_eval.tru_custom_app import instrument
+from trulens_eval import Tru
+from trulens_eval.tru_app import App as TruApp
+from trulens_eval.feedback import Feedback
 from trulens_eval.feedback.provider.openai import OpenAI as OpenAIFeedback
-from trulens.core.guardrails.base import context_filter
-from trulens.dashboard import run_dashboard
+from trulens_eval.tru_custom_app import instrument
+from trulens_eval.guardrails.context import context_filter
+from trulens_eval.dashboard import run_dashboard
 
 # -------------------------------------
 # Logging
@@ -80,13 +82,14 @@ except Exception as e:
 # -------------------------------------
 # TruLens Session
 # -------------------------------------
-session = TruSession()
+session = Tru().start_session()
 session.reset_database()
 
 # -------------------------------------
 # RAG Class
 # -------------------------------------
 from openai import OpenAI
+
 oai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 class RAG:
