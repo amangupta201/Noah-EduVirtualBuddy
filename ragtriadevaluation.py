@@ -171,11 +171,11 @@ except Exception as e:
     logging.error("Error during TruApp base execution", exc_info=True)
 
 # -------------------------------------
-# Run TruLens Dashboard on 0.0.0.0:8501
+# Run TruLens Dashboard on 0.0.0.0:8502
 # -------------------------------------
 from trulens.dashboard import run_dashboard
 
 try:
-    run_dashboard(session, port=8501)
+    run_dashboard(session, port=8502)
 except Exception as e:
     logging.error("Error starting dashboard", exc_info=True)
