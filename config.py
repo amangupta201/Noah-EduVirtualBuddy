@@ -1,4 +1,8 @@
-# config.py
+import os
+from dotenv import load_dotenv
 
-OPENAI_API_KEY = "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"
-OPENAI_MODEL = "gpt-3.5-turbo"
+#load .env variables
+load_dotenv()
+
+OPENAI_API_KEY=os.getenv("OPENAI_API_KEY")
+OPENAI_MODEL=os.getenv("OPENAI_MODEL")
