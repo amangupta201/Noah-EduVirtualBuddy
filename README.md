@@ -187,7 +187,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Have questions or suggestions? Feel free to reach out:
 
 - GitHub Issues: [Create an issue](https://github.com/amangupta201/PDF-RAG-Bot/issues)
-- Email: your.email@example.com
 
 ---
 
